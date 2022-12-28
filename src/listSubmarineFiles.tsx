@@ -15,6 +15,8 @@ const GATEWAY = preferences.GATEWAY
 
 export default function Command() {
 
+  const { push } = useNavigation()
+
   console.log(GATEWAY)
 
   if(preferences.GATEWAY === "https://gateway.pinata.cloud"){
@@ -94,7 +96,7 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
     }
   }
 
-  const generateKey = async (fileId, cid) => {
+  const generateKey = async (fileId, cid: string) => {
     const toast = await showToast({ style: Toast.Style.Animated, title: "generating link" });
     try {
       const data = JSON.stringify({
@@ -138,6 +140,7 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
           ]}
           actions={
             <ActionPanel>
+            <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid}/>
              {link ? <Action.OpenInBrowser url={link} /> : <Action title="Copy Link" onAction={() => generateKey(item.id, item.cid)}/> }
              <Action title="Delete File" shortcut={{ modifiers: ["cmd"], key: "delete"}} onAction={() => deleteFile(item.id)} />
             </ActionPanel>

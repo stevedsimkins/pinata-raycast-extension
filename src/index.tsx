@@ -31,7 +31,7 @@ function GenerateLink() {
     try {
       const file = await axios.get(`https://managed.mypinata.cloud/api/v1/content?cidContains=${values.cid}`, {
         headers: {
-          'x-api-key': KEY
+          'x-api-key': SUBMARINE_KEY
         }
       })
       const fileId = file.data.items[0].id
@@ -44,7 +44,7 @@ function GenerateLink() {
 
       const token = await axios.post('https://managed.mypinata.cloud/api/v1/auth/content/jwt', data, {
         headers: {
-          'x-api-key': KEY,
+          'x-api-key': SUBMARINE_KEY,
           'Content-Type': 'application/json'
         }
       })
