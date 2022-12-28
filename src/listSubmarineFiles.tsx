@@ -13,8 +13,65 @@ const SUBMARINE_KEY = preferences.SUBMARINE_KEY
 const JWT = `Bearer ${preferences.PINATA_JWT}`
 const GATEWAY = preferences.GATEWAY
 
-export default function Command() {
+function SubmarineDetail({ fileId, cid}){
+    const [link, setLink] = useState("");
+    const [seconds, setSeconds] = useState(null)
+    const [minutes, setMinutes] = useState(null)
+    const [hours, setHours] = useState(null)
+    const [days, setDays] = useState(null)
+    const [weeks, setWeeks] = useState(null)
+    const [months, setMonths] = useState(null)
 
+    const generateKey = async (fileId, cid: string) => {
+    const toast = await showToast({ style: Toast.Style.Animated, title: "generating link" });
+    try {
+      const data = JSON.stringify({
+        "timeoutSeconds": seconds,
+        "contentIds": [
+          `${fileId}`
+        ]
+      })
+
+      const token = await axios.post('https://managed.mypinata.cloud/api/v1/auth/content/jwt', data, {
+        headers: {
+          'x-api-key': SUBMARINE_KEY,
+          'Content-Type': 'application/json'
+        }
+      })
+      console.log(token)
+      await Clipboard.copy(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
+      setLink(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
+      toast.style = Toast.Style.Success;
+      toast.title = "Link Generated";
+      toast.message = "Copied link to clipboard";
+    } catch (error) {
+      console.log(error)
+      toast.style = Toast.Style.Failure;
+      toast.title = "Failed sharing secret";
+      toast.message = String(error);
+    }
+  }
+
+  return (
+    <Form 
+      actions={
+        <ActionPanel>
+          <Action.SubmitForm title="Generate Link" onSubmit={() => generateKey(fileId, cid)} />
+        </ActionPanel>
+      }
+    >
+      <Form.Description text="Decide how long you would like the link to be valid for" />
+      <Form.TextField id="seconds" title="Seconds" value={seconds} onChange={setSeconds} />
+      {/* <Form.TextField id="minutes" title="Minutes" value={minutes} onChange={setMinutes} />
+      <Form.TextField id="hours" title="Hours" value={hours} onChange={setHours} />
+      <Form.TextField id="days" title="Days" value={days} onChange={setDays} />
+      <Form.TextField id="weeks" title="Weeks" value={weeks} onChange={setWeeks} />
+      <Form.TextField id="months" title="Months" value={months} onChange={setMonths} /> */}
+    </Form>
+  )
+}
+
+function SubmarineList() {
   const { push } = useNavigation()
 
   console.log(GATEWAY)
@@ -40,7 +97,6 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
   }
 
   const [pins, setPins] = useState<IData[]>([]);
-  const [link, setLink] = useState("");
 
   useEffect(() => {
     async function fetchFiles() {
@@ -96,35 +152,6 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
     }
   }
 
-  const generateKey = async (fileId, cid: string) => {
-    const toast = await showToast({ style: Toast.Style.Animated, title: "generating link" });
-    try {
-      const data = JSON.stringify({
-        "timeoutSeconds": 600,
-        "contentIds": [
-          `${fileId}`
-        ]
-      })
-
-      const token = await axios.post('https://managed.mypinata.cloud/api/v1/auth/content/jwt', data, {
-        headers: {
-          'x-api-key': SUBMARINE_KEY,
-          'Content-Type': 'application/json'
-        }
-      })
-      console.log(token)
-      await Clipboard.copy(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
-      setLink(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
-      toast.style = Toast.Style.Success;
-      toast.title = "Link Generated";
-      toast.message = "Copied link to clipboard";
-    } catch (error) {
-      console.log(error)
-      toast.style = Toast.Style.Failure;
-      toast.title = "Failed sharing secret";
-      toast.message = String(error);
-    }
-  }
 
 
   return (
@@ -140,8 +167,8 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
           ]}
           actions={
             <ActionPanel>
+            <Action title="Detail" onAction={() => push(<SubmarineDetail fileId={item.id} cid={item.cid} />)} />
             <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid}/>
-             {link ? <Action.OpenInBrowser url={link} /> : <Action title="Copy Link" onAction={() => generateKey(item.id, item.cid)}/> }
              <Action title="Delete File" shortcut={{ modifiers: ["cmd"], key: "delete"}} onAction={() => deleteFile(item.id)} />
             </ActionPanel>
           }
@@ -149,4 +176,8 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
       ))}
     </List>
   )
+}
+
+export default function Command() {
+  return <SubmarineList />
 }
