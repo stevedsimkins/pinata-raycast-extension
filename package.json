@@ -36,12 +36,6 @@
   ],
   "commands": [
     {
-      "name": "index",
-      "title": "Submarine Link",
-      "description": "Quickly get a valid Submarine link for a Submarined CID",
-      "mode": "view"
-    },
-    {
       "name": "uploadFile",
       "title": "Upload File",
       "description": "Upload a file to Pinata",
@@ -49,7 +43,7 @@
     },
     {
       "name": "uploadDirectory",
-      "title": "Upload Directory",
+      "title": "Upload Folder",
       "description": "Upload a folder to Pinata",
       "mode": "view"
     },

@@ -10,23 +10,58 @@ interface Preferences {
 
 const preferences = getPreferenceValues<Preferences>();
 const SUBMARINE_KEY = preferences.SUBMARINE_KEY
-const JWT = `Bearer ${preferences.PINATA_JWT}`
 const GATEWAY = preferences.GATEWAY
 
 function SubmarineDetail({ fileId, cid}){
-    const [link, setLink] = useState("");
-    const [seconds, setSeconds] = useState(null)
-    const [minutes, setMinutes] = useState(null)
-    const [hours, setHours] = useState(null)
-    const [days, setDays] = useState(null)
-    const [weeks, setWeeks] = useState(null)
-    const [months, setMonths] = useState(null)
+    const [seconds, setSeconds] = useState("")
+    const [minutes, setMinutes] = useState("")
+    const [hours, setHours] = useState("")
+    const [days, setDays] = useState("")
+    const [weeks, setWeeks] = useState("")
+    const [months, setMonths] = useState("")
+
+    const convertToSeconds = (seconds, minutes, hours, days, weeks, months) => {
+      console.log('Pre-function values:', seconds, minutes, hours, days, weeks, months)
+      seconds = Number(seconds)
+      minutes = Number(minutes)
+      hours = Number(hours)
+      days = Number(days)
+      weeks = Number(weeks)
+      months = Number(months)
+
+      if (seconds === null){
+        seconds = 0
+      }if (minutes === null){
+        minutes = 0
+      } if (hours === null){
+        hours = 0
+      } if (days === null){
+        days = 0
+      } if (weeks === null){
+        weeks = 0
+      } if (months === null){
+        months = 0
+      }  
+
+      
+      let minutesInSeconds = minutes * 60;
+      let hoursInSeconds = hours * 3600;
+      let daysInSeconds = days * 86400;
+      let weeksInSeconds = weeks * 604800;
+      let monthsInSeconds = months * 2629746
+
+      let totalSeconds = seconds + minutesInSeconds + hoursInSeconds + daysInSeconds + weeksInSeconds + monthsInSeconds
+      return totalSeconds
+    }
 
     const generateKey = async (fileId, cid: string) => {
+
+    let time = convertToSeconds(seconds, minutes, hours, days, weeks, months)
+
     const toast = await showToast({ style: Toast.Style.Animated, title: "generating link" });
     try {
       const data = JSON.stringify({
-        "timeoutSeconds": seconds,
+        "timeoutSeconds": time,
         "contentIds": [
           `${fileId}`
         ]
@@ -40,7 +75,6 @@ function SubmarineDetail({ fileId, cid}){
       })
       console.log(token)
       await Clipboard.copy(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
-      setLink(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
       toast.style = Toast.Style.Success;
       toast.title = "Link Generated";
       toast.message = "Copied link to clipboard";
@@ -62,11 +96,11 @@ function SubmarineDetail({ fileId, cid}){
     >
       <Form.Description text="Decide how long you would like the link to be valid for" />
       <Form.TextField id="seconds" title="Seconds" value={seconds} onChange={setSeconds} />
-      {/* <Form.TextField id="minutes" title="Minutes" value={minutes} onChange={setMinutes} />
+      <Form.TextField id="minutes" title="Minutes" value={minutes} onChange={setMinutes} />
       <Form.TextField id="hours" title="Hours" value={hours} onChange={setHours} />
       <Form.TextField id="days" title="Days" value={days} onChange={setDays} />
       <Form.TextField id="weeks" title="Weeks" value={weeks} onChange={setWeeks} />
-      <Form.TextField id="months" title="Months" value={months} onChange={setMonths} /> */}
+      <Form.TextField id="months" title="Months" value={months} onChange={setMonths} />
     </Form>
   )
 }

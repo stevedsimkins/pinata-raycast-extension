@@ -1,4 +1,4 @@
-import { List, Icon, Toast, showToast, ActionPanel, Action, getPreferenceValues, Detail, confirmAlert } from "@raycast/api"
+import { List, Icon, Toast, showToast, ActionPanel, Action, getPreferenceValues, Detail, Alert, confirmAlert } from "@raycast/api"
 import axios from "axios"
 import { useState, useEffect } from "react"
 
@@ -9,13 +9,12 @@ interface Preferences {
 }
 
 const preferences = getPreferenceValues<Preferences>();
-const SUBMARINE_KEY = preferences.SUBMARINE_KEY
 const JWT = `Bearer ${preferences.PINATA_JWT}`
 const GATEWAY = preferences.GATEWAY
 
 export default function Command() {
 
-  const [pins, setPins] = useState<IData[]>([]);
+  const [pins, setPins] = useState([]);
 
   useEffect(() => {
     async function fetchFiles() {
@@ -58,9 +57,7 @@ export default function Command() {
       title: "Delete File",
       message: "Are you sure you want to delete this file?",
       icon: Icon.Trash,
-      style: {
-        ActionStyle: "Destructive"
-      },
+      style: Alert.ActionStyle.Destructive
     }
     if(await confirmAlert(alertOptions)){
 

@@ -1,5 +1,4 @@
-import { Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, Checkbox, getPreferenceValues, Detail} from "@raycast/api";
-import { useState } from "react";
+import { Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, Checkbox, getPreferenceValues } from "@raycast/api";
 import axios from 'axios';
 import formData from "form-data";
 import fs from 'fs';
@@ -13,7 +12,6 @@ interface Preferences {
 const preferences =   getPreferenceValues<Preferences>();
 const SUBMARINE_KEY = preferences.SUBMARINE_KEY
 const JWT = `Bearer ${preferences.PINATA_JWT}`
-const GATEWAY = preferences.GATEWAY
 
 type values = {
   file: string[];
