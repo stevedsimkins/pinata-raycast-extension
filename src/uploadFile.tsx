@@ -19,10 +19,10 @@ type values = {
 };
 
 function UploadFile() {
-  async function handleSubmit(values: { file; name: string; submarine: boolean }) {
+  async function handleSubmit(values: { file: string[]; name: string; submarine: boolean }) {
 
 
-    if (!values.file) {
+    if (!values.file[0]) {
       showToast({
         style: Toast.Style.Failure,
         title: "Please select a file!",
@@ -42,7 +42,7 @@ function UploadFile() {
 
         data.append('file', file)
         const metadata = JSON.stringify({
-          name: values.name ? values.name : "file from Raycast"
+          name: values.name ? values.name : "File uploaded from Raycast"
         })
         data.append('pinataMetadata', metadata)
 

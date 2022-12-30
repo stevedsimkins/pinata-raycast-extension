@@ -90,6 +90,27 @@ function SubmarineDetail({ fileId, cid, streamStatus, setStreamStatus }){
     }
   }
 
+  if(!preferences.GATEWAY.includes("mypinata")){
+
+    const markdown = `
+# Missing Dedicated Gateway
+
+In Order to use Submarining Commands you need to privide your [Dedicated Gateway](https://app.pinata.cloud/gateway) first! Press Enter to continue!
+`;
+    
+    return (
+        <Detail
+          markdown={markdown}
+          actions={
+            <ActionPanel>
+              <Action title="Open Extension Preferences" onAction={openExtensionPreferences} />
+            </ActionPanel>
+          }
+        />
+      );
+  }
+
+
   return (
     <Form 
       actions={
@@ -115,25 +136,6 @@ function SubmarineList() {
 
   console.log(GATEWAY)
 
-  if(preferences.GATEWAY === "https://gateway.pinata.cloud"){
-
-    const markdown = `
-# Missing Dedicated Gateway
-
-In Order to use Submarining Commands you need to privide your [Dedicated Gateway](https://app.pinata.cloud/gateway) first! Press Enter to continue!
-`;
-    
-    return (
-        <Detail
-          markdown={markdown}
-          actions={
-            <ActionPanel>
-              <Action title="Open Extension Preferences" onAction={openExtensionPreferences} />
-            </ActionPanel>
-          }
-        />
-      );
-  }
 
   const [pins, setPins] = useState<IData[]>([]);
 

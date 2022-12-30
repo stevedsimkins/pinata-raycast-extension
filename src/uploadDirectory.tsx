@@ -23,7 +23,7 @@ type values = {
 function UploadFile() {
   async function handleSubmit(values: { folder: string[]; name: string; submarine: boolean }) {
 
-    if (!values.folder) {
+    if (!values.folder[0]) {
       showToast({
         style: Toast.Style.Failure,
         title: "Please select a folder!",
