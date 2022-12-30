@@ -1,4 +1,4 @@
-import { Form, useNavigation, List, Toast, showToast, ActionPanel, Action, getPreferenceValues, Clipboard, Detail, openExtensionPreferences } from "@raycast/api"
+import { Alert, Icon, Form, useNavigation, List, Toast, showToast, ActionPanel, Action, getPreferenceValues, Clipboard, Detail, openExtensionPreferences, confirmAlert } from "@raycast/api"
 import axios from "axios"
 import { useState, useEffect } from "react"
 
@@ -8,11 +8,15 @@ interface Preferences {
   GATEWAY: string
 }
 
+type values = {
+  stream: boolean
+}
+
 const preferences = getPreferenceValues<Preferences>();
 const SUBMARINE_KEY = preferences.SUBMARINE_KEY
 const GATEWAY = preferences.GATEWAY
 
-function SubmarineDetail({ fileId, cid}){
+function SubmarineDetail({ fileId, cid, streamStatus, setStreamStatus }){
     const [seconds, setSeconds] = useState("")
     const [minutes, setMinutes] = useState("")
     const [hours, setHours] = useState("")
@@ -90,11 +94,11 @@ function SubmarineDetail({ fileId, cid}){
     <Form 
       actions={
         <ActionPanel>
-          <Action.SubmitForm title="Generate Link" onSubmit={() => generateKey(fileId, cid)} />
+          <Action.SubmitForm title="Generate Link" onSubmit={() => generateKey(fileId, cid)} icon={Icon.Link} />
         </ActionPanel>
       }
     >
-      <Form.Description text="Decide how long you would like the link to be valid for" />
+      <Form.Description text="How long would you like the link to be valid for?" />
       <Form.TextField id="seconds" title="Seconds" value={seconds} onChange={setSeconds} />
       <Form.TextField id="minutes" title="Minutes" value={minutes} onChange={setMinutes} />
       <Form.TextField id="hours" title="Hours" value={hours} onChange={setHours} />
@@ -106,6 +110,7 @@ function SubmarineDetail({ fileId, cid}){
 }
 
 function SubmarineList() {
+
   const { push } = useNavigation()
 
   console.log(GATEWAY)
@@ -169,21 +174,38 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
   }
 
   const deleteFile = async (fileId) => {
-    const toast = await showToast({ style: Toast.Style.Animated, title: "Deleting File" });
 
-    try {
-      const delRes = await axios.delete(`https://managed.mypinata.cloud/api/v1/content/${fileId}`, {
-        headers: {
-          'x-api-key': SUBMARINE_KEY
-        }
-      })
-      toast.style = Toast.Style.Success;
-      toast.title = "File Deleted!";
-    } catch (error) {
-      toast.style = Toast.Style.Failure;
-      toast.title = "Failed Deleting File";
-      console.log(error)
+    const options: Alert.Options = {
+      title: "Delete File",
+      message: "Are you sure you want to delete this file?",
+      icon: Icon.Trash,
+      primaryAction: {
+        title: "Delete",
+        style: Alert.ActionStyle.Destructive
+      }
     }
+
+    if(await confirmAlert(options)){
+
+      const toast = await showToast({ style: Toast.Style.Animated, title: "Deleting File" });
+
+      try {
+        const delRes = await axios.delete(`https://managed.mypinata.cloud/api/v1/content/${fileId}`, {
+          headers: {
+            'x-api-key': SUBMARINE_KEY
+          }
+        })
+        toast.style = Toast.Style.Success;
+        toast.title = "File Deleted!";
+      } catch (error) {
+        toast.style = Toast.Style.Failure;
+        toast.title = "Failed Deleting File";
+        console.log(error)
+      }
+    } else {
+      console.log("cancelled")
+    }
+
   }
 
 
@@ -201,9 +223,9 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
           ]}
           actions={
             <ActionPanel>
-            <Action title="Detail" onAction={() => push(<SubmarineDetail fileId={item.id} cid={item.cid} />)} />
-            <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid}/>
-             <Action title="Delete File" shortcut={{ modifiers: ["cmd"], key: "delete"}} onAction={() => deleteFile(item.id)} />
+            <Action title="Generate Link" onAction={() => push(<SubmarineDetail fileId={item.id} cid={item.cid} />)} icon={Icon.Link} />
+            <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid} icon={Icon.CopyClipboard}/>
+             <Action title="Delete File" shortcut={{ modifiers: ["cmd"], key: "delete"}} style={Action.Style.Destructive} onAction={() => deleteFile(item.id)} icon={Icon.Trash} />
             </ActionPanel>
           }
          />

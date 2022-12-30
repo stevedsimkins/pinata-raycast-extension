@@ -26,7 +26,7 @@ function UploadFile() {
     if (!values.folder) {
       showToast({
         style: Toast.Style.Failure,
-        title: "Please select a file!",
+        title: "Please select a folder!",
       });
       return;
     }
@@ -87,7 +87,7 @@ function UploadFile() {
       console.log(error)
     }
   }
-      return (<Action.SubmitForm title="Upload Folder" onSubmit={handleSubmit} />);
+      return (<Action.SubmitForm title="Upload Folder" onSubmit={handleSubmit} icon={Icon.Upload}/>);
   }
 
 export default function Command() {
@@ -101,7 +101,7 @@ export default function Command() {
     >
       <Form.Description text="Upload a Folder to Pinata!" />
       <Form.FilePicker id="folder" allowMultipleSelection={false} canChooseDirectories canChooseFiles={false} />
-      <Form.TextField id="name" title="Name" placeholder="Choose the name for your file" />
+      <Form.TextField id="name" title="Name" placeholder="Choose the name for your folder" />
       {/* <Form.Checkbox id="submarine" label="Submarine File" defaultValue={false} / */}
       <Form.Separator />
     </Form>

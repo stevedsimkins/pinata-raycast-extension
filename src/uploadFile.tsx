@@ -1,4 +1,4 @@
-import { Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, Checkbox, getPreferenceValues } from "@raycast/api";
+import { Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, getPreferenceValues } from "@raycast/api";
 import axios from 'axios';
 import formData from "form-data";
 import fs from 'fs';
@@ -19,7 +19,7 @@ type values = {
 };
 
 function UploadFile() {
-  async function handleSubmit(values: { file: string[]; name: string; submarine: boolean }) {
+  async function handleSubmit(values: { file; name: string; submarine: boolean }) {
 
 
     if (!values.file) {
@@ -30,7 +30,7 @@ function UploadFile() {
       return;
     }
 
-    const toast = await showToast({ style: Toast.Style.Animated, title: "uploading file" });
+    const toast = await showToast({ style: Toast.Style.Animated, title: "Uploading File..." });
 
     try {
 
@@ -84,7 +84,7 @@ function UploadFile() {
       console.log(error)
     }
   }
-      return (<Action.SubmitForm title="Upload File" onSubmit={handleSubmit} />);
+      return (<Action.SubmitForm title="Upload File" onSubmit={handleSubmit} icon={Icon.Upload} />);
   }
 
 export default function Command() {

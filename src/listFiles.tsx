@@ -53,13 +53,16 @@ export default function Command() {
   }
 
   const deleteFile = async (hash) => {
-    const alertOptions = {
+    const options: Alert.Options = {
       title: "Delete File",
       message: "Are you sure you want to delete this file?",
       icon: Icon.Trash,
-      style: Alert.ActionStyle.Destructive
+      primaryAction: {
+        title: "Delete",
+        style: Alert.ActionStyle.Destructive
+      }
     }
-    if(await confirmAlert(alertOptions)){
+    if(await confirmAlert(options)){
 
       const toast = await showToast({ style: Toast.Style.Animated, title: "Deleting File" });
 
@@ -96,7 +99,9 @@ export default function Command() {
           actions={
             <ActionPanel>
              <Action.OpenInBrowser url={`${GATEWAY}/ipfs/${item.ipfs_pin_hash}`} />  
-             <Action style={Action.Style.Destructive} title="Delete File" shortcut={{ modifiers: ["cmd"], key: "delete"}} onAction={() => deleteFile(item.ipfs_pin_hash)} />
+             <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid} icon={Icon.CopyClipboard}/>
+             <Action.OpenInBrowser url={`${GATEWAY}/ipfs/${item.ipfs_pin_hash}?stream=true`} title="Stream Video File" icon={Icon.Play} />
+             <Action style={Action.Style.Destructive} title="Delete File" shortcut={{ modifiers: ["cmd"], key: "delete"}} onAction={() => deleteFile(item.ipfs_pin_hash)} icon={Icon.Trash} />
             </ActionPanel>
           }
          />
