@@ -12,7 +12,7 @@ const preferences = getPreferenceValues<Preferences>();
 const SUBMARINE_KEY = preferences.SUBMARINE_KEY
 const GATEWAY = preferences.GATEWAY
 
-function SubmarineDetail({ fileId, cid, streamStatus, setStreamStatus }){
+function SubmarineDetail({ fileId, cid }){
     const [seconds, setSeconds] = useState("")
     const [minutes, setMinutes] = useState("")
     const [hours, setHours] = useState("")
@@ -139,7 +139,7 @@ function SubmarineList() {
   console.log(GATEWAY)
 
 
-  const [pins, setPins] = useState<IData[]>([]);
+  const [pins, setPins] = useState([]);
 
   useEffect(() => {
     async function fetchFiles() {

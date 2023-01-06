@@ -47,7 +47,7 @@ function UploadFile() {
         data.append('pinataMetadata', metadata)
 
         const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', data, {
-          maxBodyLength: "Infinity",
+          maxBodyLength: Infinity,
           headers: {
             'Content-Type': `multipart/form-data;`,
             Authorization: JWT

@@ -1,4 +1,4 @@
-import { Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, Checkbox, getPreferenceValues } from "@raycast/api";
+import { Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, getPreferenceValues } from "@raycast/api";
 import axios from 'axios';
 import formData from "form-data";
 import fs from 'fs';
@@ -51,7 +51,7 @@ function UploadFile() {
         data.append('pinataMetadata', metadata)
 
         const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', data, {
-          maxBodyLength: "Infinity",
+          maxBodyLength: Infinity,
           headers: {
             'Content-Type': `multipart/form-data;`,
             Authorization: JWT
