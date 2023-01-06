@@ -8,10 +8,6 @@ interface Preferences {
   GATEWAY: string
 }
 
-type values = {
-  stream: boolean
-}
-
 const preferences = getPreferenceValues<Preferences>();
 const SUBMARINE_KEY = preferences.SUBMARINE_KEY
 const GATEWAY = preferences.GATEWAY
@@ -23,6 +19,7 @@ function SubmarineDetail({ fileId, cid, streamStatus, setStreamStatus }){
     const [days, setDays] = useState("")
     const [weeks, setWeeks] = useState("")
     const [months, setMonths] = useState("")
+    const [stream, setStream] = useState(false)
 
     const convertToSeconds = (seconds, minutes, hours, days, weeks, months) => {
       console.log('Pre-function values:', seconds, minutes, hours, days, weeks, months)
@@ -58,7 +55,7 @@ function SubmarineDetail({ fileId, cid, streamStatus, setStreamStatus }){
       return totalSeconds
     }
 
-    const generateKey = async (fileId, cid: string) => {
+    const generateKey = async (fileId, cid) => {
 
     let time = convertToSeconds(seconds, minutes, hours, days, weeks, months)
 
@@ -78,7 +75,11 @@ function SubmarineDetail({ fileId, cid, streamStatus, setStreamStatus }){
         }
       })
       console.log(token)
-      await Clipboard.copy(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
+      if(stream){
+        await Clipboard.copy(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}&stream=true`)
+      } else {
+        await Clipboard.copy(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}`)
+      }
       toast.style = Toast.Style.Success;
       toast.title = "Link Generated";
       toast.message = "Copied link to clipboard";
@@ -126,6 +127,7 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
       <Form.TextField id="days" title="Days" value={days} onChange={setDays} />
       <Form.TextField id="weeks" title="Weeks" value={weeks} onChange={setWeeks} />
       <Form.TextField id="months" title="Months" value={months} onChange={setMonths} />
+      <Form.Checkbox id="stream" label="Stream Video File" value={stream} onChange={setStream} />
     </Form>
   )
 }

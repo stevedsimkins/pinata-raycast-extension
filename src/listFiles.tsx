@@ -1,4 +1,4 @@
-import { List, Icon, Toast, showToast, ActionPanel, Action, getPreferenceValues, Detail, Alert, confirmAlert } from "@raycast/api"
+import { List, Icon, Toast, showToast, ActionPanel, Action, getPreferenceValues, Alert, confirmAlert } from "@raycast/api"
 import axios from "axios"
 import { useState, useEffect } from "react"
 
@@ -40,7 +40,7 @@ export default function Command() {
     fetchFiles()
   },[])
 
-  const formatBytes = (bytes, decimals = 2) => {
+  const formatBytes = (bytes: number, decimals = 2) => {
     if (!+bytes) return '0 Bytes'
 
     const k = 1024
