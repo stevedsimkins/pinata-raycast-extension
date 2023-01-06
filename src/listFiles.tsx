@@ -1,19 +1,28 @@
-import { List, Icon, Toast, showToast, ActionPanel, Action, getPreferenceValues, Alert, confirmAlert } from "@raycast/api"
-import axios from "axios"
-import { useState, useEffect } from "react"
+import {
+  List,
+  Icon,
+  Toast,
+  showToast,
+  ActionPanel,
+  Action,
+  getPreferenceValues,
+  Alert,
+  confirmAlert,
+} from "@raycast/api";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 interface Preferences {
-  PINATA_JWT: string,
-  SUBMARINE_KEY: string,
-  GATEWAY: string
+  PINATA_JWT: string;
+  SUBMARINE_KEY: string;
+  GATEWAY: string;
 }
 
 const preferences = getPreferenceValues<Preferences>();
-const JWT = `Bearer ${preferences.PINATA_JWT}`
-const GATEWAY = preferences.GATEWAY
+const JWT = `Bearer ${preferences.PINATA_JWT}`;
+const GATEWAY = preferences.GATEWAY;
 
 export default function Command() {
-
   const [pins, setPins] = useState([]);
 
   useEffect(() => {
@@ -21,36 +30,36 @@ export default function Command() {
       const toast = await showToast({ style: Toast.Style.Animated, title: "Fetching files" });
 
       try {
-        const res = await axios.get('https://api.pinata.cloud/data/pinList?includesCount=false&status=pinned', {
+        const res = await axios.get("https://api.pinata.cloud/data/pinList?includesCount=false&status=pinned", {
           headers: {
-            'Authorization': JWT
-          }
-        })
+            Authorization: JWT,
+          },
+        });
 
         toast.style = Toast.Style.Success;
         toast.title = "Complete!";
-        const files = res.data
-        const rows = files.rows
-        console.log(rows)
-        setPins(rows)
+        const files = res.data;
+        const rows = files.rows;
+        console.log(rows);
+        setPins(rows);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
-    fetchFiles()
-  },[])
+    fetchFiles();
+  }, []);
 
   const formatBytes = (bytes: number, decimals = 2) => {
-    if (!+bytes) return '0 Bytes'
+    if (!+bytes) return "0 Bytes";
 
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-  }
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  };
 
   const deleteFile = async (hash) => {
     const options: Alert.Options = {
@@ -59,53 +68,58 @@ export default function Command() {
       icon: Icon.Trash,
       primaryAction: {
         title: "Delete",
-        style: Alert.ActionStyle.Destructive
-      }
-    }
-    if(await confirmAlert(options)){
-
+        style: Alert.ActionStyle.Destructive,
+      },
+    };
+    if (await confirmAlert(options)) {
       const toast = await showToast({ style: Toast.Style.Animated, title: "Deleting File" });
 
       try {
         const delRes = await axios.delete(`https://api.pinata.cloud/pinning/unpin/${hash}`, {
           headers: {
-            'Authorization': JWT
-          }
-        })
+            Authorization: JWT,
+          },
+        });
         toast.style = Toast.Style.Success;
         toast.title = "File Deleted!";
       } catch (error) {
         toast.style = Toast.Style.Failure;
         toast.title = "Failed Deleting File";
-        console.log(error)
+        console.log(error);
       }
     } else {
-      console.log("cancelled")
+      console.log("cancelled");
     }
-  }
-
+  };
 
   return (
     <List>
       {pins.map((item) => (
-        <List.Item 
-          key={item.id} 
-          title={item.metadata.name} 
-          subtitle={item.ipfs_pin_hash} 
-          accessories={[
-            {text: formatBytes(item.size)},
-            {date: new Date(item.date_pinned) }
-          ]}
+        <List.Item
+          key={item.id}
+          title={item.metadata.name}
+          subtitle={item.ipfs_pin_hash}
+          accessories={[{ text: formatBytes(item.size) }, { date: new Date(item.date_pinned) }]}
           actions={
             <ActionPanel>
-             <Action.OpenInBrowser url={`${GATEWAY}/ipfs/${item.ipfs_pin_hash}`} />  
-             <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid} icon={Icon.CopyClipboard}/>
-             <Action.OpenInBrowser url={`${GATEWAY}/ipfs/${item.ipfs_pin_hash}?stream=true`} title="Stream Video File" icon={Icon.Play} />
-             <Action style={Action.Style.Destructive} title="Delete File" shortcut={{ modifiers: ["cmd"], key: "delete"}} onAction={() => deleteFile(item.ipfs_pin_hash)} icon={Icon.Trash} />
+              <Action.OpenInBrowser url={`${GATEWAY}/ipfs/${item.ipfs_pin_hash}`} />
+              <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid} icon={Icon.CopyClipboard} />
+              <Action.OpenInBrowser
+                url={`${GATEWAY}/ipfs/${item.ipfs_pin_hash}?stream=true`}
+                title="Stream Video File"
+                icon={Icon.Play}
+              />
+              <Action
+                style={Action.Style.Destructive}
+                title="Delete File"
+                shortcut={{ modifiers: ["cmd"], key: "delete" }}
+                onAction={() => deleteFile(item.ipfs_pin_hash)}
+                icon={Icon.Trash}
+              />
             </ActionPanel>
           }
-         />
+        />
       ))}
     </List>
-  )
+  );
 }
