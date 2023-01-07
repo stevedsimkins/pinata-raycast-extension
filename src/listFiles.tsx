@@ -40,7 +40,6 @@ export default function Command() {
         toast.title = "Complete!";
         const files = res.data;
         const rows = files.rows;
-        console.log(rows);
         setPins(rows);
       } catch (error) {
         console.log(error);

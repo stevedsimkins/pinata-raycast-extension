@@ -37,7 +37,6 @@ function SubmarineDetail({ fileId, cid }) {
   const [stream, setStream] = useState(false);
 
   const convertToSeconds = (seconds, minutes, hours, days, weeks, months) => {
-    console.log("Pre-function values:", seconds, minutes, hours, days, weeks, months);
     seconds = Number(seconds);
     minutes = Number(minutes);
     hours = Number(hours);
@@ -90,7 +89,6 @@ function SubmarineDetail({ fileId, cid }) {
           "Content-Type": "application/json",
         },
       });
-      console.log(token);
       if (stream) {
         await Clipboard.copy(`${GATEWAY}/ipfs/${cid}?accessToken=${token.data}&stream=true`);
       } else {
@@ -149,8 +147,6 @@ In Order to use Submarining Commands you need to privide your [Dedicated Gateway
 function SubmarineList() {
   const { push } = useNavigation();
 
-  console.log(GATEWAY);
-
   const [pins, setPins] = useState([]);
 
   useEffect(() => {
@@ -168,7 +164,6 @@ function SubmarineList() {
         toast.title = "Complete!";
         const files = res.data;
         const rows = files.items;
-        console.log(rows);
         setPins(rows);
       } catch (error) {
         console.log(error);
