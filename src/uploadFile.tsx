@@ -20,7 +20,6 @@ type values = {
 };
 
 function UploadFile({ loading, setLoading }) {
-
   async function handleSubmit(values: { file: string[]; name: string; submarine: boolean }) {
     if (!values.file[0]) {
       showToast({
@@ -31,7 +30,7 @@ function UploadFile({ loading, setLoading }) {
     }
 
     const toast = await showToast({ style: Toast.Style.Animated, title: "Uploading File..." });
-    setLoading(true)
+    setLoading(true);
 
     try {
       const data = new formData();
@@ -59,7 +58,7 @@ function UploadFile({ loading, setLoading }) {
         toast.style = Toast.Style.Success;
         toast.title = "File Uploaded!";
         toast.message = String("CID copied to clipboard");
-        setLoading(false)
+        setLoading(false);
       } else {
         data.append("files", file);
         data.append("name", values.name ? values.name : "File from Raycast");
@@ -76,13 +75,13 @@ function UploadFile({ loading, setLoading }) {
         toast.style = Toast.Style.Success;
         toast.title = "File Uploaded!";
         toast.message = String("CID copied to clipboard");
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed Uploading File";
       toast.message = String(error);
-      setLoading(false)
+      setLoading(false);
       console.log(error);
     }
   }
@@ -94,24 +93,28 @@ export default function Command() {
 
   return (
     <>
-    <List>
-      <List.EmptyView icon={{ source: "loading/loading.gif" }} title="Uploading Your File" description="This could take a while depending on your file size and internet connection" />
-    </List>
-    {!loading && (
-    <Form
-      actions={
-        <ActionPanel>
-          <UploadFile loading={loading} setLoading={setLoading} />
-        </ActionPanel>
-      }
-    >
-      <Form.Description text="Upload a file to Pinata!" />
-      <Form.FilePicker id="file" allowMultipleSelection={false} />
-      <Form.TextField id="name" title="Name" placeholder="Choose the name for your file" />
-      <Form.Checkbox id="submarine" label="Submarine File" defaultValue={false} />
-      <Form.Separator />
-    </Form>
-    )}
+      <List>
+        <List.EmptyView
+          icon={{ source: "loading/loading.gif" }}
+          title="Uploading Your File"
+          description="This could take a while depending on your file size and internet connection"
+        />
+      </List>
+      {!loading && (
+        <Form
+          actions={
+            <ActionPanel>
+              <UploadFile loading={loading} setLoading={setLoading} />
+            </ActionPanel>
+          }
+        >
+          <Form.Description text="Upload a file to Pinata!" />
+          <Form.FilePicker id="file" allowMultipleSelection={false} />
+          <Form.TextField id="name" title="Name" placeholder="Choose the name for your file" />
+          <Form.Checkbox id="submarine" label="Submarine File" defaultValue={false} />
+          <Form.Separator />
+        </Form>
+      )}
     </>
   );
 }

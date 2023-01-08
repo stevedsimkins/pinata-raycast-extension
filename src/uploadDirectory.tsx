@@ -32,7 +32,7 @@ function UploadFolder({ loading, setLoading }) {
     }
 
     const toast = await showToast({ style: Toast.Style.Animated, title: "Uploading Folder..." });
-    setLoading(true)
+    setLoading(true);
 
     try {
       const data = new formData();
@@ -63,7 +63,7 @@ function UploadFolder({ loading, setLoading }) {
         toast.style = Toast.Style.Success;
         toast.title = "Folder Uploaded!";
         toast.message = String("CID copied to clipboard");
-        setLoading(false)
+        setLoading(false);
       } else {
         data.append("name", values.name ? values.name : "File from Raycast");
         data.append("pinToIPFS", "false");
@@ -79,13 +79,13 @@ function UploadFolder({ loading, setLoading }) {
         toast.style = Toast.Style.Success;
         toast.title = "Folder Uploaded!";
         toast.message = String("CID copied to clipboard");
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed Uploading Folder";
       toast.message = String(error);
-      setLoading(false)
+      setLoading(false);
       console.log(error);
     }
   }
@@ -93,29 +93,32 @@ function UploadFolder({ loading, setLoading }) {
 }
 
 export default function Command() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   return (
     <>
-    <List>
-      <List.EmptyView icon={{ source: "loading/loading.gif" }} title="Uploading Your File" description="This could take a while depending on your folder size and internet connection" />
-    </List>
-    {!loading && (
-<Form
-      actions={
-        <ActionPanel>
-          <UploadFolder loading={loading} setLoading={setLoading} />
-        </ActionPanel>
-      }
-    >
-      <Form.Description text="Upload a Folder to Pinata!" />
-      <Form.FilePicker id="folder" allowMultipleSelection={false} canChooseDirectories canChooseFiles={false} />
-      <Form.TextField id="name" title="Name" placeholder="Choose the name for your folder" />
-      {/* <Form.Checkbox id="submarine" label="Submarine File" defaultValue={false} / */}
-      <Form.Separator />
-    </Form>
-    )}
-    
+      <List>
+        <List.EmptyView
+          icon={{ source: "loading/loading.gif" }}
+          title="Uploading Your File"
+          description="This could take a while depending on your folder size and internet connection"
+        />
+      </List>
+      {!loading && (
+        <Form
+          actions={
+            <ActionPanel>
+              <UploadFolder loading={loading} setLoading={setLoading} />
+            </ActionPanel>
+          }
+        >
+          <Form.Description text="Upload a Folder to Pinata!" />
+          <Form.FilePicker id="folder" allowMultipleSelection={false} canChooseDirectories canChooseFiles={false} />
+          <Form.TextField id="name" title="Name" placeholder="Choose the name for your folder" />
+          {/* <Form.Checkbox id="submarine" label="Submarine File" defaultValue={false} / */}
+          <Form.Separator />
+        </Form>
+      )}
     </>
   );
 }

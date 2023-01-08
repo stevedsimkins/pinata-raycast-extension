@@ -31,9 +31,7 @@ function SubmarineDetail({ fileId, cid }) {
   const [stream, setStream] = useState(false);
   const [time, setTime] = useState("");
 
-
   const generateKey = async (fileId, cid) => {
-
     const toast = await showToast({ style: Toast.Style.Animated, title: "generating link" });
     try {
       const data = JSON.stringify({
@@ -110,7 +108,7 @@ function SubmarineList() {
   const { push } = useNavigation();
 
   const [pins, setPins] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchFiles() {
@@ -182,33 +180,38 @@ function SubmarineList() {
 
   return (
     <List>
-      <List.EmptyView icon={{ source: "loading/loading.gif" }} title="Retrieving your files" description="This will only take a few seconds" />
+      <List.EmptyView
+        icon={{ source: "loading/loading.gif" }}
+        title="Retrieving your files"
+        description="This will only take a few seconds"
+      />
 
-      {!loading && pins.map((item) => (
-        <List.Item
-          key={item.id}
-          title={item.name}
-          subtitle={item.cid}
-          accessories={[{ text: formatBytes(item.size) }, { date: new Date(item.createdAt) }]}
-          actions={
-            <ActionPanel>
-              <Action
-                title="Generate Link"
-                onAction={() => push(<SubmarineDetail fileId={item.id} cid={item.cid} />)}
-                icon={Icon.Link}
-              />
-              <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid} icon={Icon.CopyClipboard} />
-              <Action
-                title="Delete File"
-                shortcut={{ modifiers: ["cmd"], key: "delete" }}
-                style={Action.Style.Destructive}
-                onAction={() => deleteFile(item.id)}
-                icon={Icon.Trash}
-              />
-            </ActionPanel>
-          }
-        />
-      ))}
+      {!loading &&
+        pins.map((item) => (
+          <List.Item
+            key={item.id}
+            title={item.name}
+            subtitle={item.cid}
+            accessories={[{ text: formatBytes(item.size) }, { date: new Date(item.createdAt) }]}
+            actions={
+              <ActionPanel>
+                <Action
+                  title="Generate Link"
+                  onAction={() => push(<SubmarineDetail fileId={item.id} cid={item.cid} />)}
+                  icon={Icon.Link}
+                />
+                <Action.CopyToClipboard title="Copy CID to Clipboard" content={item.cid} icon={Icon.CopyClipboard} />
+                <Action
+                  title="Delete File"
+                  shortcut={{ modifiers: ["cmd"], key: "delete" }}
+                  style={Action.Style.Destructive}
+                  onAction={() => deleteFile(item.id)}
+                  icon={Icon.Trash}
+                />
+              </ActionPanel>
+            }
+          />
+        ))}
     </List>
   );
 }
