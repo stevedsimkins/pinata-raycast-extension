@@ -24,10 +24,11 @@ const GATEWAY = preferences.GATEWAY;
 
 export default function Command() {
   const [pins, setPins] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchFiles() {
-      const toast = await showToast({ style: Toast.Style.Animated, title: "Fetching files" });
+      const toast = await showToast({ style: Toast.Style.Animated, title: "Loading..." });
 
       try {
         const res = await axios.get("https://api.pinata.cloud/data/pinList?includesCount=false&status=pinned", {
@@ -41,6 +42,7 @@ export default function Command() {
         const files = res.data;
         const rows = files.rows;
         setPins(rows);
+        setLoading(false)
       } catch (error) {
         console.log(error);
       }
@@ -93,7 +95,10 @@ export default function Command() {
 
   return (
     <List>
-      {pins.map((item) => (
+
+      <List.EmptyView icon={{ source: "loading/loading.gif" }} title="Retrieving your files" description="This will only take a few seconds" />
+
+      {!loading && pins.map((item) => (
         <List.Item
           key={item.id}
           title={item.metadata.name}
@@ -107,6 +112,7 @@ export default function Command() {
                 url={`${GATEWAY}/ipfs/${item.ipfs_pin_hash}?stream=true`}
                 title="Stream Video File"
                 icon={Icon.Play}
+                shortcut={{ modifiers: ["cmd"], key: "s" }}
               />
               <Action
                 style={Action.Style.Destructive}

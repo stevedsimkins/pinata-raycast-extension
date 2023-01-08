@@ -148,6 +148,7 @@ function SubmarineList() {
   const { push } = useNavigation();
 
   const [pins, setPins] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchFiles() {
@@ -165,6 +166,7 @@ function SubmarineList() {
         const files = res.data;
         const rows = files.items;
         setPins(rows);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -218,7 +220,9 @@ function SubmarineList() {
 
   return (
     <List>
-      {pins.map((item) => (
+      <List.EmptyView icon={{ source: "loading/loading.gif" }} title="Retrieving your files" description="This will only take a few seconds" />
+
+      {!loading && pins.map((item) => (
         <List.Item
           key={item.id}
           title={item.name}
