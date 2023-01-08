@@ -109,7 +109,10 @@ function SubmarineDetail({ fileId, cid }) {
     const markdown = `
 # Missing Dedicated Gateway
 
-In Order to use Submarining Commands you need to privide your [Dedicated Gateway](https://app.pinata.cloud/gateway) first! Press Enter to continue!
+In order to use Submarining Commands you need to privide your [Dedicated Gateway](https://app.pinata.cloud/gateway) first! Press Enter to open the Extension Preferences to provide your Gateway.
+
+
+If your plan does not include a Dedicated Gateway consider upgrading [here!](https://app.pinata.cloud/billing)
 `;
 
     return (
@@ -155,7 +158,7 @@ function SubmarineList() {
       const toast = await showToast({ style: Toast.Style.Animated, title: "Fetching files" });
 
       try {
-        const res = await axios.get("https://managed.mypinata.cloud/api/v1/content?status=pinned", {
+        const res = await axios.get("https://managed.mypinata.cloud/api/v1/content?status=pinned&limit=100", {
           headers: {
             "x-api-key": SUBMARINE_KEY,
           },

@@ -50,13 +50,13 @@
     {
       "name": "listFiles",
       "title": "List Files",
-      "description": "Retrieve the latest 10 files from your Pinata account",
+      "description": "Retrieve the latest 100 files from your Pinata account",
       "mode": "view"
     },
     {
       "name": "listSubmarineFiles",
       "title": "List Submarined Files",
-      "description": "Retrieve the latest 10 Submarined files from your Pinata account",
+      "description": "Retrieve the latest 100 Submarined files from your Pinata account",
       "mode": "view"
     }
   ],

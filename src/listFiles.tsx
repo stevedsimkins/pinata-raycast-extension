@@ -31,7 +31,7 @@ export default function Command() {
       const toast = await showToast({ style: Toast.Style.Animated, title: "Loading..." });
 
       try {
-        const res = await axios.get("https://api.pinata.cloud/data/pinList?includesCount=false&status=pinned", {
+        const res = await axios.get("https://api.pinata.cloud/data/pinList?includesCount=false&status=pinned&pageLimit=100", {
           headers: {
             Authorization: JWT,
           },
