@@ -28,53 +28,11 @@ const SUBMARINE_KEY = preferences.SUBMARINE_KEY;
 const GATEWAY = preferences.GATEWAY;
 
 function SubmarineDetail({ fileId, cid }) {
-  const [seconds, setSeconds] = useState("");
-  const [minutes, setMinutes] = useState("");
-  const [hours, setHours] = useState("");
-  const [days, setDays] = useState("");
-  const [weeks, setWeeks] = useState("");
-  const [months, setMonths] = useState("");
   const [stream, setStream] = useState(false);
+  const [time, setTime] = useState("");
 
-  const convertToSeconds = (seconds, minutes, hours, days, weeks, months) => {
-    seconds = Number(seconds);
-    minutes = Number(minutes);
-    hours = Number(hours);
-    days = Number(days);
-    weeks = Number(weeks);
-    months = Number(months);
-
-    if (seconds === null) {
-      seconds = 0;
-    }
-    if (minutes === null) {
-      minutes = 0;
-    }
-    if (hours === null) {
-      hours = 0;
-    }
-    if (days === null) {
-      days = 0;
-    }
-    if (weeks === null) {
-      weeks = 0;
-    }
-    if (months === null) {
-      months = 0;
-    }
-
-    let minutesInSeconds = minutes * 60;
-    let hoursInSeconds = hours * 3600;
-    let daysInSeconds = days * 86400;
-    let weeksInSeconds = weeks * 604800;
-    let monthsInSeconds = months * 2629746;
-
-    let totalSeconds = seconds + minutesInSeconds + hoursInSeconds + daysInSeconds + weeksInSeconds + monthsInSeconds;
-    return totalSeconds;
-  };
 
   const generateKey = async (fileId, cid) => {
-    let time = convertToSeconds(seconds, minutes, hours, days, weeks, months);
 
     const toast = await showToast({ style: Toast.Style.Animated, title: "generating link" });
     try {
@@ -136,12 +94,13 @@ If your plan does not include a Dedicated Gateway consider upgrading [here!](htt
       }
     >
       <Form.Description text="How long would you like the link to be valid for?" />
-      <Form.TextField id="seconds" title="Seconds" value={seconds} onChange={setSeconds} />
-      <Form.TextField id="minutes" title="Minutes" value={minutes} onChange={setMinutes} />
-      <Form.TextField id="hours" title="Hours" value={hours} onChange={setHours} />
-      <Form.TextField id="days" title="Days" value={days} onChange={setDays} />
-      <Form.TextField id="weeks" title="Weeks" value={weeks} onChange={setWeeks} />
-      <Form.TextField id="months" title="Months" value={months} onChange={setMonths} />
+      <Form.Dropdown id="time" title="Time" value={time} onChange={setTime}>
+        <Form.Dropdown.Item value="60" title="1 Minute" />
+        <Form.Dropdown.Item value="3600" title="1 Hour" />
+        <Form.Dropdown.Item value="86400" title="1 Day" />
+        <Form.Dropdown.Item value="604800" title="1 Week" />
+        <Form.Dropdown.Item value="2629746" title="1 Month" />
+      </Form.Dropdown>
       <Form.Checkbox id="stream" label="Stream Video File" value={stream} onChange={setStream} />
     </Form>
   );
