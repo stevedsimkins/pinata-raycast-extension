@@ -1,4 +1,5 @@
-import { Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, getPreferenceValues } from "@raycast/api";
+import { List, Icon, Clipboard, Toast, Form, ActionPanel, Action, showToast, getPreferenceValues } from "@raycast/api";
+import { useState } from "react";
 import axios from "axios";
 import formData from "form-data";
 import fs from "fs";
@@ -18,7 +19,8 @@ type values = {
   name: string;
 };
 
-function UploadFile() {
+function UploadFile({ loading, setLoading }) {
+
   async function handleSubmit(values: { file: string[]; name: string; submarine: boolean }) {
     if (!values.file[0]) {
       showToast({
@@ -29,6 +31,7 @@ function UploadFile() {
     }
 
     const toast = await showToast({ style: Toast.Style.Animated, title: "Uploading File..." });
+    setLoading(true)
 
     try {
       const data = new formData();
@@ -56,6 +59,7 @@ function UploadFile() {
         toast.style = Toast.Style.Success;
         toast.title = "File Uploaded!";
         toast.message = String("CID copied to clipboard");
+        setLoading(false)
       } else {
         data.append("files", file);
         data.append("name", values.name ? values.name : "File from Raycast");
@@ -72,11 +76,13 @@ function UploadFile() {
         toast.style = Toast.Style.Success;
         toast.title = "File Uploaded!";
         toast.message = String("CID copied to clipboard");
+        setLoading(false)
       }
     } catch (error) {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed Uploading File";
       toast.message = String(error);
+      setLoading(false)
       console.log(error);
     }
   }
@@ -84,11 +90,18 @@ function UploadFile() {
 }
 
 export default function Command() {
+  const [loading, setLoading] = useState(false);
+
   return (
+    <>
+    <List>
+      <List.EmptyView icon={{ source: "loading/loading.gif" }} title="Uploading Your File" description="This could take a while depending on your file size and internet connection" />
+    </List>
+    {!loading && (
     <Form
       actions={
         <ActionPanel>
-          <UploadFile />
+          <UploadFile loading={loading} setLoading={setLoading} />
         </ActionPanel>
       }
     >
@@ -98,5 +111,7 @@ export default function Command() {
       <Form.Checkbox id="submarine" label="Submarine File" defaultValue={false} />
       <Form.Separator />
     </Form>
+    )}
+    </>
   );
 }
